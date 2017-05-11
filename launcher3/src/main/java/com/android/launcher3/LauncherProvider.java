@@ -1032,6 +1032,8 @@ public class LauncherProvider extends ContentProvider {
             return rank;
         }
 
+        // 负责解析default_workspace.xml文件。
+        // 传入default_workspace文件的资源ID和数据库实例，把xml里面数据解析，保存到Launcher数据库。
         @Thunk int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
             ArrayList<Long> screenIds = new ArrayList<Long>();
             // TODO: Use multiple loaders with fall-back and transaction.

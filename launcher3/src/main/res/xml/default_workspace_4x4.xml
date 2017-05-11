@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
+<!--第一次运行Launcher时，读取该配置文件进行布局-->
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
     <!-- Far-left screen [0] -->
 
@@ -28,6 +28,10 @@
         launcher:spanY="1" />
 
     <!-- Middle screen [2] -->
+    <!-- 插件
+        launcher:spanX="2"  //在X方向上所占格数
+        launcher:spanY="2"
+    -->
     <appwidget
         launcher:packageName="com.android.deskclock"
         launcher:className="com.android.alarmclock.AnalogAppWidgetProvider"
@@ -36,6 +40,16 @@
         launcher:y="0"
         launcher:spanX="2"
         launcher:spanY="2" />
+
+    <!--程序快捷键属性标签-->
+    <!--    //Launcher默认是有5个分屏，可以配置，行列也可以配置
+        <favorite
+            launcher:packageName="com.android.camera"       //该应用的包名
+            launcher:className="com.android.camera.Camera"  //点击图标时启动的类
+            launcher:screen="2"                             //第1屏，0-4共5屏
+            launcher:x="0"                                  //图标X位置,左上角第一个为0,向左递增,0-4共5个
+            launcher:y="3" />                               //图标Y位置,左上角第一个为0,向下递增,0-2共3个
+    -->
     <favorite
         launcher:packageName="com.android.camera"
         launcher:className="com.android.camera.Camera"

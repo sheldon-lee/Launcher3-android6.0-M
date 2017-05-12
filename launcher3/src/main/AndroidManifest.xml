@@ -22,6 +22,7 @@
     package="com.android.launcher3">
     <uses-sdk android:targetSdkVersion="21" android:minSdkVersion="16"/>
 
+    <!-- 桌面添加快捷方式的权限 -->
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
@@ -126,6 +127,7 @@
             </intent-filter>
         </activity>
 
+        <!-- 对外提供设置壁纸功能的activity -->
         <activity
             android:name="com.android.launcher3.WallpaperPickerActivity"
             android:theme="@style/Theme.WallpaperPicker"
@@ -139,6 +141,7 @@
             </intent-filter>
         </activity>
 
+        <!-- 通过第三方应用（比如图库）设置壁纸时提供的处理接口 -->
         <activity
             android:name="com.android.launcher3.WallpaperCropActivity"
             android:theme="@style/Theme.WallpaperCropper"
@@ -181,6 +184,7 @@
             >
         </service>
 
+        <!--接收壁纸改变的广播-->
         <receiver
             android:name="com.android.launcher3.WallpaperChangedReceiver">
             <intent-filter>
@@ -189,6 +193,7 @@
         </receiver>
 
         <!-- Intent received used to install shortcuts from other applications -->
+        <!-- 往桌面添加快捷方式的广播 -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
             android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
@@ -198,12 +203,14 @@
         </receiver>
 
         <!-- Intent received used to initialize a restored widget -->
+        <!-- 桌面小部件 -->
         <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
             </intent-filter>
         </receiver>
 
+        <!-- 系统启动完成的广播 -->
         <receiver android:name="com.android.launcher3.StartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -211,6 +218,7 @@
         </receiver>
 
         <!-- The settings provider contains Home's data, like the workspace favorites -->
+        <!-- Launcher3应用程序数据库组件配置 对数据的访问或修改需要申请权限，WRITE_SETTINGS，READ_SETTINGS -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
             android:authorities="com.android.launcher3.settings"
@@ -218,6 +226,7 @@
             android:writePermission="com.android.launcher3.permission.WRITE_SETTINGS"
             android:readPermission="com.android.launcher3.permission.READ_SETTINGS" />
 
+        <!-- Launcher3默认禁用NFC功能 -->
         <meta-data android:name="android.nfc.disable_beam_default"
             android:value="true" />
     </application>

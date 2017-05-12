@@ -435,6 +435,7 @@ public class Launcher extends Activity
 
         super.onCreate(savedInstanceState);
 
+        // Launcher创建时需对运行环境进行初始化，初始化的信息保存在LauncherAppState实例中
         LauncherAppState.setApplicationContext(getApplicationContext());
         LauncherAppState app = LauncherAppState.getInstance();
 
@@ -485,6 +486,7 @@ public class Launcher extends Activity
             android.os.Debug.stopMethodTracing();
         }
 
+        // 加载桌面数据
         if (!mRestoring) {
             if (DISABLE_SYNCHRONOUS_BINDING_CURRENT_PAGE) {
                 // If the user leaves launcher, then we should just load items asynchronously when
@@ -983,8 +985,9 @@ public class Launcher extends Activity
         super.onResume();
 
         // Restore the previous launcher state
+        // mOnResumeState指示Launcher之前的显示状态
         if (mOnResumeState == State.WORKSPACE) {
-            showWorkspace(false);
+            showWorkspace(false);// 无动画立即显示桌面
         } else if (mOnResumeState == State.APPS) {
             boolean launchedFromApp = (mWaitingForResume != null);
             // Don't update the predicted apps if the user is returning to launcher in the apps
@@ -1354,14 +1357,14 @@ public class Launcher extends Activity
         mFocusHandler = (FocusIndicatorView) findViewById(R.id.focus_indicator);
         mDragLayer = (DragLayer) findViewById(R.id.drag_layer);
         mWorkspace = (Workspace) mDragLayer.findViewById(R.id.workspace);
-        mWorkspace.setPageSwitchListener(this);
+        mWorkspace.setPageSwitchListener(this);// 给Workspace设置页面切换监听器
         mPageIndicators = mDragLayer.findViewById(R.id.page_indicator);
 
-        mLauncherView.setSystemUiVisibility(
+        mLauncherView.setSystemUiVisibility(// 设置Launcher为全屏
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);
+        mWorkspaceBackgroundDrawable = getResources().getDrawable(R.drawable.workspace_bg);// 获取桌面的背景图片
 
-        // Setup the drag layer
+        // Setup the drag layer 设置拖拽层
         mDragLayer.setup(this, dragController);
 
         // Setup the hotseat
@@ -1371,6 +1374,7 @@ public class Launcher extends Activity
         }
 
         mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
+        // 对选择桌面小部件按钮进行设置，监听点击事件及触摸事件
         mWidgetsButton = findViewById(R.id.widget_button);
         mWidgetsButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -1382,6 +1386,7 @@ public class Launcher extends Activity
         });
         mWidgetsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
+        // 对选择桌面壁纸按钮进行设置，监听点击事件和触摸事件
         View wallpaperButton = findViewById(R.id.wallpaper_button);
         wallpaperButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -1393,6 +1398,7 @@ public class Launcher extends Activity
         });
         wallpaperButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
+        // 监听设置功能按钮点击及触摸事件
         View settingsButton = findViewById(R.id.settings_button);
         if (hasSettings()) {
             settingsButton.setOnClickListener(new OnClickListener() {
@@ -1408,15 +1414,16 @@ public class Launcher extends Activity
             settingsButton.setVisibility(View.GONE);
         }
 
+        // 将预览模式面板设置为透明
         mOverviewPanel.setAlpha(0f);
 
         // Setup the workspace
-        mWorkspace.setHapticFeedbackEnabled(false);
-        mWorkspace.setOnLongClickListener(this);
-        mWorkspace.setup(dragController);
+        mWorkspace.setHapticFeedbackEnabled(false);// Workspace无操作反馈（如长按时）
+        mWorkspace.setOnLongClickListener(this);// 设置Workspace的长按监听
+        mWorkspace.setup(dragController);// 接收拖拽控制器的控制
         dragController.addDragListener(mWorkspace);
 
-        // Get the search/delete bar
+        // Get the search/delete bar 获取搜索/投放条实例
         mSearchDropTargetBar = (SearchDropTargetBar)
                 mDragLayer.findViewById(R.id.search_drop_target_bar);
 
@@ -2123,7 +2130,7 @@ public class Launcher extends Activity
             return;
         }
         Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// launcher启动activity使用的是新任务方式
         intent.setComponent(globalSearchActivity);
         // Make sure that we have a Bundle to put source in
         if (appSearchData == null) {
@@ -2864,15 +2871,17 @@ public class Launcher extends Activity
     }
 
     private boolean startActivity(View v, Intent intent, Object tag) {
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// Launcher启动Activity通常使用新任务方式
         try {
             // Only launch using the new animation if the shortcut has not opted out (this is a
             // private contract between launcher and may be ignored in the future).
+            // 确定启动activity的过场动画来源
             boolean useLaunchAnimation = (v != null) &&
                     !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
             LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(this);
             UserManagerCompat userManager = UserManagerCompat.getInstance(this);
 
+            // 获取使用当前设备的用户
             UserHandleCompat user = null;
             if (intent.hasExtra(AppInfo.EXTRA_PROFILE)) {
                 long serialNumber = intent.getLongExtra(AppInfo.EXTRA_PROFILE, -1);
@@ -4335,6 +4344,7 @@ public class Launcher extends Activity
         }
     }
 
+    // 解开对Launcher方向的限制
     public void unlockScreenOrientation(boolean immediate) {
         if (mRotationEnabled) {
             if (immediate) {
@@ -4408,6 +4418,7 @@ public class Launcher extends Activity
         return mSharedPrefs.getBoolean(FIRST_RUN_ACTIVITY_DISPLAYED, false);
     }
 
+    // 首次使用launcher是否显示帮助界面
     public boolean showFirstRunActivity() {
         if (shouldRunFirstRunActivity() &&
                 hasFirstRunActivity()) {
@@ -4448,7 +4459,7 @@ public class Launcher extends Activity
         return null;
     }
 
-    /**
+    /** 首次使用时是否显示桌面的帮助界面（介绍界面）
      * To be overriden by subclasses to indicate whether the in-activity intro screen has been
      * dismissed. This method is ignored if #hasDismissableIntroScreen returns false.
      */
@@ -4457,6 +4468,7 @@ public class Launcher extends Activity
                 !mSharedPrefs.getBoolean(INTRO_SCREEN_DISMISSED, false);
     }
 
+    // 显示介绍界面
     protected void showIntroScreen() {
         View introScreen = getIntroScreen();
         changeWallpaperVisiblity(false);
